@@ -1,27 +1,63 @@
 from main import BooksCollector
 
-# класс TestBooksCollector объединяет набор тестов, которыми мы покрываем наше приложение BooksCollector
-# обязательно указывать префикс Test
+
 class TestBooksCollector:
+    def test_add_new_book_book_name_true(self, book_name):
+        books = BooksCollector()
+        books.add_new_book(name=book_name)
+        assert_book = list(books.books_rating.keys())
+        assert assert_book[0] == book_name
 
-    # пример теста:
-    # обязательно указывать префикс test_
-    # дальше идет название метода, который тестируем add_new_book_
-    # затем, что тестируем add_two_books - добавление двух книг
-    def test_add_new_book_add_two_books(self):
-        # создаем экземпляр (объект) класса BooksCollector
-        collector = BooksCollector()
+    def test_get_book_rating_default_rating_true(self, book_name):
+        books = BooksCollector()
+        books.add_new_book(name=book_name)
+        assert books.get_book_rating(book_name) == 1
 
-        # добавляем две книги
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.add_new_book('Что делать, если ваш кот хочет вас убить')
+    def test_get_book_rating_set_default_rating_true(self, book_name):
+        default_rating = 3
+        books = BooksCollector()
+        books.add_new_book(name=book_name)
+        books.set_book_rating(book_name, default_rating)
+        assert books.get_book_rating(book_name) == default_rating
 
-        # проверяем, что добавилось именно две
-        # словарь books_rating, который нам возвращает метод get_books_rating, имеет длину 2
-        assert len(collector.get_books_rating()) == 2
+    def test_get_book_specific_rating_set_some_rating_tru(self, book_name):
+        default_rating = 3
+        books = BooksCollector()
+        books.add_new_book(name=book_name)
+        books.set_book_rating(book_name, default_rating)
+        books.get_books_with_specific_rating(default_rating)
+        assert books.get_book_rating(book_name) == default_rating
 
+    def test_get_books_rating_type_dict_true(self, book_name):
+        books = BooksCollector()
+        books.add_new_book(name=book_name)
+        books.get_books_rating()
+        assert type(books.get_books_rating()) == dict
 
+    def test_get_books_rating_check_equal_books_true(self, book_name):
+        books = BooksCollector()
+        books.add_new_book(name=book_name)
+        books.add_new_book(name='book2')
+        books.get_books_rating()
+        assert len(books.get_books_rating()) == 2
 
-print(1)
-    # напиши свои тесты ниже
-    # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector()
+    def test_add_book_in_favorites_check_favourite_books_true(self, book_name):
+        books = BooksCollector()
+        books.add_new_book(name=book_name)
+        books.add_book_in_favorites(book_name)
+        assert book_name in books.get_list_of_favorites_books()
+
+    def test_delete_book_from_favorites_check_del_favourite_book_true(self, book_name):
+        books = BooksCollector()
+        books.add_new_book(name=book_name)
+        books.add_book_in_favorites(book_name)
+        books.delete_book_from_favorites(book_name)
+        books_list = books.get_list_of_favorites_books()
+        assert book_name not in books_list
+
+    def test_get_list_of_favorites_books_check_favourite_books_true(self, book_name):
+        books = BooksCollector()
+        books.add_new_book(name=book_name)
+        books.add_new_book(name='book_name2')
+        books.add_book_in_favorites(book_name)
+        assert book_name in books.get_list_of_favorites_books()
